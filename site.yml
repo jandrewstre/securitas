@@ -1,0 +1,115 @@
+---
+- hosts: all
+  remote_user: deploy
+  sudo: true
+  gather_facts: true
+  vars:
+    - locale: "en_US.UTF-8"
+    - timezone: "America/Los_Angeles"
+
+    # generate on a linux box like so:
+    # echo 'import crypt,getpass; print crypt.crypt(getpass.getpass(), "$6$YOURSALT")' | python -
+    - root_password: "$6$f88s7d7fjjsdfl$iNVNiGx9PpszGBCWY0Ob7VuhkZ4CgsLrBvEcueG3xf6DMbIZo.FAZbGxgZ1udoDUmvkFvyTjK0bY8X11/Tia4."
+      # obviously you'll want to change this
+      # password: root
+      # salt: $6$f88s7d7fjjsdfl
+
+    - deploy_username: "deploy"
+    - deploy_password: "$6$f88s7d7fjjsdfl$W2.au1oqTrGIv.cJOdaqcRoBoixfLCBK0mPw3DSHtcG43Hz9jB4LBlh9Zh0giHMchrPiMAWwxwRdlFEfxfV.90"
+      # obviously you'll want to change this, too
+      # password: deploy
+      # salt: $6$f88s7d7fjjsdfl
+
+    - ssh:
+        port: 22
+        allowed_users:
+          - "{{deploy_username}}"
+
+    - logwatch:
+        output: mail # or stdout
+        format: text # or html
+        mailto: root
+        mailfrom: root
+
+  tasks:
+    - name: Change root password
+      user: name=root password=$root_password
+
+    - name: Set hostname
+      hostname: name={{inventory_hostname}}
+      when: inventory_hostname is defined
+
+    - name: Set locale
+      locale_gen: name={{locale}} state=present
+
+    - name: Set time zone
+      command: cp /usr/share/zoneinfo/{{timezone}} /etc/localtime
+    - command: echo "{{timezone}}" > /etc/timezone
+
+    - name: Upgrade installed packages
+      apt: upgrade=yes update_cache=yes cache_valid_time=86400
+
+    - name: Install various packages
+      apt: pkg={{item}} state=present
+      with_items:
+        - zsh
+        - vim
+        - tmux
+        - tree
+        - unattended-upgrades
+        - logwatch
+
+    - name: Add and configure deploy user
+      user: name=deploy password=$deploy_password shell=/usr/bin/zsh
+
+    - name: Set deploy user's authorized_keys
+      authorized_key: user=deploy key="{{item}}"
+      with_file:
+        - public_keys/deploy
+
+      # FIXME: Set up SSH login notifications.
+    - name: Lock down SSH
+      template: src=templates/sshd_config.j2 dest=/etc/ssh/sshd_config mode=0644
+      notify:
+        - restart sshd
+
+    - name: Test SSH configuration
+      command: /usr/sbin/sshd -t
+
+    - name: Configure unattended upgrades
+      template: src=templates/{{item.path}} dest=/etc/apt/apt.conf.d/{{item.dest}}
+      with_items:
+        - { path: apt_20auto-upgrades.j2, dest: 20auto-upgrades }
+        - { path: apt_50unattended-upgrades.j2, dest: 50unattended-upgrades }
+
+    - name: Configure logwatch
+      template: src=templates/logwatch.conf.j2 dest=/usr/share/logwatch/default.conf/logwatch.conf mode=0644
+
+      # FIXME: Maybe also nagios?
+
+    - name: Update ufw OpenSSH profile
+      template: src=templates/ufw_openssh-server.j2 dest=/etc/ufw/applications.d/openssh-server mode=0644
+      notify:
+        - update ufw profiles
+
+    - name: Allow + rate-limit SSH traffic
+      ufw: rule=limit name=OpenSSH log=yes
+
+    - name: Allow all incoming traffic on the loopback interface
+      ufw: rule=allow direction=in interface=lo
+
+    - name: Allow all outgoing traffic
+      command: ufw default allow outgoing
+
+    - name: Deny all other traffic
+      command: ufw default deny
+
+    - name: Enable ufw + logging
+      ufw: state=enabled logging=on
+
+  handlers:
+  - name: restart sshd
+    service: name=ssh state=restarted
+
+  - name: update ufw profiles
+    command: ufw app update all
