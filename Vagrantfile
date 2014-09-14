@@ -21,14 +21,8 @@ Vagrant.configure("2") do |config|
 
       machine.vm.provision :ansible do |ansible|
         ansible.playbook = "site.yml"
-        # ansible.groups = { "vagrant" => ["securitas.local"] }
         ansible.extra_vars = { ansible_ssh_user: "vagrant", testing: true }
         ansible.host_key_checking = false
-
-        # ansible.limit = 'all'
-
-        # ansible.tags = []
-        # ansible.skip_tags = []
         # ansible.verbose = "vvvv"
       end
     end
