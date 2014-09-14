@@ -1,6 +1,6 @@
 #!/bin/bash
 
 # Takes a path to a host inventory file. e.g.:
-# bin/run testing.hosts
+# bin/run testing.hosts -e testing=true
 
-ansible-playbook site.yml -e testing=true -i $@
+ansible-playbook site.yml -i $@
