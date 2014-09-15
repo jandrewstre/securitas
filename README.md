@@ -21,6 +21,9 @@ install of Ubuntu.
 - locking down SSH (disallowing `root` log-ins, disallowing password-based authentication, etc.)
 - configuring unattended security upgrades
 - configuring logwatch to send an email once daily
+- setting up and configuring ZeroTier if given a `zerotier_network_id` to join
+  - if ZeroTier is used, SSH traffic will not be allowed over any public interfaces,
+    but all incoming traffic will be allowed over the private ZeroTier interface
 - setting up deny-by-default firewall rules, with exceptions only for SSH and loopback interface traffic
 
 Coming soon:

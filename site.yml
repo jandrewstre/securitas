@@ -2,7 +2,7 @@
 - hosts: all
   remote_user: deploy
   sudo: true
-  gather_facts: true
+  gather_facts: false
   vars:
     - locale: "en_US.UTF-8"
     - timezone: "America/Los_Angeles"
@@ -30,6 +30,8 @@
         format: text # or html
         mailto: root
         mailfrom: root
+
+    # - zerotier_network_id: "foo"
 
   tasks:
     - name: Change root password
@@ -87,13 +89,38 @@
 
       # FIXME: Maybe also nagios?
 
+    - name: Install ZeroTier
+      script: scripts/install-zerotier.sh creates=/usr/bin/zerotier-cli
+      register: zerotier_install
+      when: zerotier_network_id is defined
+
+    - name: Join ZeroTier network
+      command: /usr/bin/zerotier-cli join {{zerotier_network_id}}
+      when: zerotier_install|changed
+
+    - shell: /usr/bin/zerotier-cli info
+      register: zerotier_machine_id
+      ignore_errors: true
+
+    - debug: msg="Please authorize machine ID {{zerotier_machine_id.stdout|regex_replace('\\d{3} info (\\w+) .*', '\\1')}}. Waiting for zt0 interface initialization..."
+      when: zerotier_install|changed
+
+    - wait_for: path=/proc/net/if_inet6 search_regex=zt0$
+      when: zerotier_install|changed
+
+    - name: Allow all incoming traffic on the ZeroTier interface
+      ufw: rule=allow direction=in interface=zt0
+      when: zerotier_machine_id.rc == 0
+
     - name: Update ufw OpenSSH profile
       template: src=templates/ufw_openssh-server.j2 dest=/etc/ufw/applications.d/openssh-server mode=0644
+      when: zerotier_machine_id.rc != 0
       notify:
         - update ufw profiles
 
     - name: Allow + rate-limit SSH traffic
       ufw: rule=limit name=OpenSSH log=yes
+      when: zerotier_machine_id.rc != 0
 
     - name: Allow all incoming traffic on the loopback interface
       ufw: rule=allow direction=in interface=lo
