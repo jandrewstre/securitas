@@ -105,7 +105,8 @@
       register: zerotier_machine_id
       ignore_errors: true
 
-    - debug: msg="Please authorize machine ID {{zerotier_machine_id.stdout|regex_replace('\\d{3} info (\\w+) .*', '\\1')}}. Waiting for zt0 interface initialization..."
+    - name: Prompt user to authorize machine in ZeroTier network
+      debug: msg="Please authorize machine ID {{zerotier_machine_id.stdout|regex_replace('\\d{3} info (\\w+) .*', '\\1')}}. Waiting for zt0 interface initialization..."
       when: zerotier_install|changed
 
     - wait_for: path=/proc/net/if_inet6 search_regex=zt0$
@@ -131,11 +132,8 @@
     - name: Allow all outgoing traffic
       command: ufw default allow outgoing
 
-    - name: Deny all other traffic
-      command: ufw default deny
-
-    - name: Enable ufw + logging
-      ufw: state=enabled logging=on
+    - name: Enable ufw + logging with a default policy of deny
+      ufw: state=enabled policy=deny logging=on
 
   handlers:
   - name: restart sshd
