@@ -19,12 +19,19 @@ Vagrant.configure("2") do |config|
       ssh_pubkey = File.read(File.join(Dir.home, ".ssh", "id_rsa.pub"))
       machine.vm.provision :shell, :inline => "echo '#{ssh_pubkey}' >> /home/vagrant/.ssh/authorized_keys && chmod 600 /home/vagrant/.ssh/authorized_keys"
 
-      machine.vm.provision :ansible do |ansible|
-        ansible.playbook = "site.yml"
-        ansible.extra_vars = { ansible_ssh_user: "vagrant", sudo: true, testing: true }
-        ansible.host_key_checking = false
-        # ansible.verbose = "vvvv"
-      end
+      # Though having Vagrant automatically run Ansible is nice, we don't have
+      # a great way of saying "the first time, run the bootstrap.yml playbook,
+      # and any time after that, run the site.yml playbook."
+      #
+      # Instead, just run `bin/testbootstrap testing.hosts`, and then
+      # `bin/testrun testing.hosts` any time thereafter.
+      #
+      # machine.vm.provision :ansible do |ansible|
+      #   ansible.playbook = "site.yml"
+      #   ansible.extra_vars = { ansible_ssh_user: "vagrant", sudo: true, testing: true }
+      #   ansible.host_key_checking = false
+      #   # ansible.verbose = "vvvv"
+      # end
     end
   end
 end

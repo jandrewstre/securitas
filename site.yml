@@ -1,6 +1,7 @@
 ---
 - hosts: all
-  remote_user: root
+  remote_user: deploy
+  sudo: true
   gather_facts: false
   vars_files:
     # This playbook's group_vars/all is apparently not read if this playbook is
@@ -8,8 +9,8 @@
     - vars/defaults.yml
 
   roles:
+    - testing
     - common
-    - users
     - ssh
     - unattended-upgrades
     - monitoring

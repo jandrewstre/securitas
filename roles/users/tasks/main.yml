@@ -3,7 +3,7 @@
   user: name=root password={{root_user_password}}
 
 - name: Add and configure deploy user
-  user: name={{deploy_user_username}} password={{deploy_user_password}} shell=/usr/bin/zsh
+  user: name={{deploy_user_username}} password={{deploy_user_password}} # shell=/usr/bin/zsh
 
 - name: Set deploy user's authorized_keys
   authorized_key: user={{deploy_user_username}} key="{{item}}"
