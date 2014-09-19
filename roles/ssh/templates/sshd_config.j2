@@ -1,7 +1,7 @@
 # {{ansible_managed}}
 
 # What ports, IPs and protocols we listen for
-Port {{ssh.port}}
+Port {{ssh_port}}
 # Use these options to restrict which interfaces/protocols sshd will bind to
 #ListenAddress ::
 #ListenAddress 0.0.0.0
@@ -90,4 +90,4 @@ UseDNS no
 
 AuthenticationMethods publickey
 
-AllowUsers {% for item in ssh.allowed_users %}{{item}} {% endfor %}{% if testing %}vagrant{% endif %}
+AllowUsers {% for item in ssh_allowed_users %}{{item}} {% endfor %}

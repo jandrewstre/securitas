@@ -1,4 +1,8 @@
 ---
+- name: Load testing variables if applicable
+  include_vars: vars/testing.yml
+  when: testing is defined
+
 - name: Set hostname
   hostname: name={{inventory_hostname}}
   when: inventory_hostname is defined
