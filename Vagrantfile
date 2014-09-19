@@ -2,7 +2,7 @@
 # vi: set ft=ruby :
 
 hosts = {
-  "securitas.local" => "192.168.33.10"
+  "testbox.local" => "192.168.33.10"
 }
 
 Vagrant.configure("2") do |config|

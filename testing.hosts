@@ -1,1 +1,1 @@
-securitas.local ansible_ssh_host=192.168.33.10 ansible_ssh_user=vagrant
+testbox.local ansible_ssh_host=192.168.33.10 ansible_ssh_user=vagrant
