@@ -1,0 +1,14 @@
+---
+- name: Change root password
+  user: name=root password={{root_password}}
+
+- name: Add and configure deploy user
+  user: name={{deploy_username}} password={{deploy_password}} shell=/usr/bin/zsh
+
+- name: Set deploy user's authorized_keys
+  authorized_key: user={{deploy_username}} key="{{item}}"
+  with_file:
+    - public_keys/deploy
+
+- name: Give deploy user sudo privileges
+  template: src=sudoers_deploy.j2 dest=/etc/sudoers.d/{{deploy_username}} mode=0640

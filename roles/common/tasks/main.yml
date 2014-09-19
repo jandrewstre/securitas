@@ -1,0 +1,27 @@
+---
+- name: Set hostname
+  hostname: name={{inventory_hostname}}
+  when: inventory_hostname is defined
+
+- name: Set locale
+  locale_gen: name={{locale}} state=present
+
+- name: Set time zone
+  command: cp /usr/share/zoneinfo/{{timezone}} /etc/localtime
+- command: echo "{{timezone}}" > /etc/timezone
+
+- name: Upgrade installed packages
+  apt: upgrade=yes update_cache=yes cache_valid_time=86400
+
+- name: Ensure various packages are installed
+  apt: pkg={{item}} state=present
+  with_items:
+    - zsh
+    - vim
+    - tmux
+    - tree
+    - ntp
+
+- name: Ensure ntpd is running
+  service: name=ntp state=running enabled=yes
+  tags: ntp

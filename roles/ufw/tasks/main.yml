@@ -1,0 +1,26 @@
+---
+- name: Reset ufw rules
+  ufw: state=reset
+
+- name: Allow all incoming traffic on the ZeroTier interface
+  ufw: rule=allow direction=in interface=zt0
+  when: zerotier_machine_id.rc == 0
+
+- name: Update ufw OpenSSH profile
+  template: src=ufw_openssh-server.j2 dest=/etc/ufw/applications.d/openssh-server mode=0644
+  when: zerotier_machine_id.rc != 0
+  notify:
+    - update ufw profiles
+
+- name: Allow + rate-limit SSH traffic
+  ufw: rule=limit name=OpenSSH log=yes
+  when: zerotier_machine_id.rc != 0
+
+- name: Allow all incoming traffic on the loopback interface
+  ufw: rule=allow direction=in interface=lo
+
+- name: Allow all outgoing traffic
+  command: ufw default allow outgoing
+
+- name: Enable ufw + logging with a default policy of deny
+  ufw: state=enabled policy=deny logging=on

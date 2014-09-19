@@ -1,0 +1,20 @@
+---
+- name: Ensure ZeroTier is installed
+  script: install-zerotier.sh creates=/usr/bin/zerotier-cli
+  register: zerotier_install
+  when: zerotier_network_id is defined
+
+- name: Join ZeroTier network
+  command: /usr/bin/zerotier-cli join {{zerotier_network_id}}
+  when: zerotier_install|changed
+
+- shell: /usr/bin/zerotier-cli info
+  register: zerotier_machine_id
+  ignore_errors: true
+
+- name: Prompt user to authorize machine in ZeroTier network
+  debug: msg="Please authorize machine ID {{zerotier_machine_id.stdout|regex_replace('\\d{3} info (\\w+) .*', '\\1')}}. Waiting for zt0 interface initialization..."
+  when: zerotier_install|changed
+
+- wait_for: path=/proc/net/if_inet6 search_regex=zt0$
+  when: zerotier_install|changed

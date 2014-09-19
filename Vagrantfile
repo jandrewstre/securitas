@@ -21,7 +21,7 @@ Vagrant.configure("2") do |config|
 
       machine.vm.provision :ansible do |ansible|
         ansible.playbook = "site.yml"
-        ansible.extra_vars = { ansible_ssh_user: "vagrant", testing: true }
+        ansible.extra_vars = { ansible_ssh_user: "vagrant", sudo: true, testing: true }
         ansible.host_key_checking = false
         # ansible.verbose = "vvvv"
       end
