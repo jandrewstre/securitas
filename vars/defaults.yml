@@ -2,19 +2,15 @@
 locale: "en_US.UTF-8"
 timezone: "America/Los_Angeles"
 
-# generate on a linux box like so:
+# Generate password hashes on a linux box like so:
 # echo 'import crypt,getpass; print crypt.crypt(getpass.getpass(), "$6$YOURSALT")' | python -
 #
-# obviously you'll want to change this
-# password: root
-# salt: $6$f88s7d7fjjsdfl
-root_user_password: "$6$f88s7d7fjjsdfl$iNVNiGx9PpszGBCWY0Ob7VuhkZ4CgsLrBvEcueG3xf6DMbIZo.FAZbGxgZ1udoDUmvkFvyTjK0bY8X11/Tia4."
+# REQUIRED
+# root_user_password: "$6$foo"
 
 deploy_user_username: "deploy"
-# obviously you'll want to change this, too
-# password: deploy
-# salt: $6$f88s7d7fjjsdfl
-deploy_user_password: "$6$f88s7d7fjjsdfl$W2.au1oqTrGIv.cJOdaqcRoBoixfLCBK0mPw3DSHtcG43Hz9jB4LBlh9Zh0giHMchrPiMAWwxwRdlFEfxfV.90"
+# REQUIRED
+# deploy_user_password: "$6$foo"
 # REQUIRED
 # deploy_user_authorized_keys: []
 
