@@ -20,7 +20,7 @@ deploy_user_password: "$6$f88s7d7fjjsdfl$W2.au1oqTrGIv.cJOdaqcRoBoixfLCBK0mPw3DS
 
 ssh_port: 22
 ssh_allowed_users:
-  - "{{deploy_user.username}}"
+  - "{{deploy_user_username}}"
 
 logwatch_output: mail # or stdout
 logwatch_format: text # or html
