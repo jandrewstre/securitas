@@ -13,7 +13,9 @@ Vagrant.configure("2") do |config|
       machine.vm.network :private_network, ip: ip
 
       machine.vm.provider "virtualbox" do |v|
-        v.customize ["modifyvm", :id, "--memory", 512]
+        v.customize ["modifyvm", :id, "--memory", 2048]
+        v.customize ["modifyvm", :id, "--cpus", 2]
+        v.customize ["modifyvm", :id, "--ioapic", "on"]
       end
 
       ssh_pubkey = File.read(File.join(Dir.home, ".ssh", "id_rsa.pub"))
