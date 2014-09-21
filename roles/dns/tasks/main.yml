@@ -1,0 +1,8 @@
+---
+- name: Configure primary and secondary DNS nameservers
+  template: src=head.j2 dest=/etc/resolvconf/resolv.conf.d/head
+  register: resolvconf_configuration
+
+- name: update resolvconf
+  command: resolvconf -u
+  when: resolvconf_configuration|changed

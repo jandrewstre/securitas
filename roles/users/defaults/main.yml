@@ -1,0 +1,12 @@
+---
+Generate password hashes on a linux box like so:
+# echo 'import crypt,getpass; print crypt.crypt(getpass.getpass(), "$6$YOURSALT")' | python -
+#
+# REQUIRED
+# root_user_password: "$6$foo"
+
+deploy_user_username: "deploy"
+# REQUIRED
+# deploy_user_password: "$6$foo"
+# REQUIRED
+# deploy_user_authorized_keys: []

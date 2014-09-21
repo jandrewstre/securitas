@@ -1,0 +1,3 @@
+---
+nameserver_primary: "8.8.8.8"
+nameserver_secondary: "8.8.4.4"

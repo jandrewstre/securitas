@@ -1,6 +1,0 @@
-#!/bin/bash
-
-# Takes a path to a host inventory file. e.g.:
-# bin/bootstrap testing.hosts -e testing=true
-
-ansible-playbook bootstrap.yml -i $@

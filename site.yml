@@ -3,15 +3,13 @@
   remote_user: deploy
   sudo: true
   gather_facts: false
-  vars_files:
-    # This playbook's group_vars/all is apparently not read if this playbook is
-    # included in another playbook, so we explicitly load our default variables.
-    - vars/defaults.yml
 
   roles:
     - testing
     - common
     - ssh
+    - users
+    - dns
     - unattended-upgrades
     - monitoring
     - zerotier

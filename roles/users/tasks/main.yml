@@ -3,7 +3,7 @@
   user: name=root password={{root_user_password}}
 
 - name: Add and configure deploy user
-  user: name={{deploy_user_username}} password={{deploy_user_password}} # shell=/usr/bin/zsh
+  user: name={{deploy_user_username}} password={{deploy_user_password}} groups=ssh-users shell=/usr/bin/zsh
 
 - name: Set deploy user's authorized_keys
   authorized_key: user={{deploy_user_username}} key="{{item}}"
@@ -11,3 +11,7 @@
 
 - name: Give deploy user sudo privileges
   template: src=sudoers_deploy.j2 dest=/etc/sudoers.d/{{deploy_user_username}} mode=0640
+
+- name: Ensure vagrant user is in ssh-users group
+  user: name=vagrant groups=ssh-users append=yes
+  when: testing is defined
