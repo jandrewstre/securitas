@@ -12,5 +12,5 @@
     - dns
     - unattended-upgrades
     - monitoring
-    - zerotier
+    # - zerotier
     - ufw
