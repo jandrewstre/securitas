@@ -6,9 +6,9 @@
 # root_user_password: "$6$foo"
 
 # REQUIRED
-# deploy_user_password: "$6$foo"
+# admin_user_password: "$6$foo"
 # REQUIRED
-# deploy_user_authorized_keys: []
+# admin_user_authorized_keys: []
 
 # OPTIONAL
 # zerotier_network_id: "foo"

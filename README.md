@@ -17,7 +17,7 @@ install of Ubuntu.
 - setting the locale
 - setting the time zone
 - upgrading all installed packages
-- adding a `deploy` user
+- adding an admin user
 - locking down SSH (disallowing `root` log-ins, disallowing password-based authentication, etc.)
 - configuring unattended security upgrades
 - configuring logwatch to send an email once daily

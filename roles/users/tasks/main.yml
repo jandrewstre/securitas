@@ -2,15 +2,15 @@
 - name: Change root password
   user: name=root password={{root_user_password}}
 
-- name: Add and configure deploy user
-  user: name={{deploy_user_username}} password={{deploy_user_password}} groups=ssh-users shell=/usr/bin/zsh
+- name: Add and configure admin user
+  user: name={{admin_user_username}} password={{admin_user_password}} groups=ssh-users shell=/usr/bin/zsh
 
-- name: Set deploy user's authorized_keys
-  authorized_key: user={{deploy_user_username}} key="{{item}}"
-  with_items: deploy_user_authorized_keys
+- name: Set admin user's authorized_keys
+  authorized_key: user={{admin_user_username}} key="{{item}}"
+  with_items: admin_user_authorized_keys
 
-- name: Give deploy user sudo privileges
-  template: src=sudoers_deploy.j2 dest=/etc/sudoers.d/{{deploy_user_username}} mode=0640
+- name: Give admin user sudo privileges
+  template: src=sudoers_admin.j2 dest=/etc/sudoers.d/{{admin_user_username}} mode=0640
 
 - name: Ensure vagrant user is in ssh-users group
   user: name=vagrant groups=ssh-users append=yes
