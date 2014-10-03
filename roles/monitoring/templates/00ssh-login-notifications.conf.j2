@@ -1,0 +1,31 @@
+input {
+  file {
+    path => "/var/log/auth.log"
+    start_position => end
+    type => syslog
+  }
+}
+
+filter {
+  if [type] == "syslog" {
+    grok {
+      match => { "message" => "%{SYSLOGBASE2} Accepted %{WORD:authentication_method} for %{WORD:user} from %{IPORHOST:rhost} port %{POSINT:port} %{GREEDYDATA:tail}" }
+      add_tag => [ "login_notification" ]
+    }
+
+    syslog_pri { }
+
+    date {
+      match => [ "timestamp", "MMM  d HH:mm:ss", "MMM dd HH:mm:ss" ]
+    }
+  }
+}
+
+output {
+  if "login_notification" in [tags] {
+    # stdout { codec => rubydebug }
+    exec {
+      command => "/usr/local/bin/mandrill-send -f '{{ssh_login_notification_from}}' -t '{{ssh_login_notification_to}}' -cc '{{ssh_login_notification_cc}}' -u '%{host}: ssh login notification' -m 'User %{user} logged into %{host} from %{rhost} at %{@timestamp}.' &"
+    }
+  }
+}

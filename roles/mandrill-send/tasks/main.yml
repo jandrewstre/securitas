@@ -1,0 +1,10 @@
+---
+- name: Ensure sendemail package is installed
+  apt: pkg={{item}} state=present
+  with_items:
+    - sendemail
+    - libnet-ssleay-perl
+    - libio-socket-ssl-perl
+
+- name: Install mandrill-send
+  template: src=mandrill-send.j2 dest=/usr/local/bin/mandrill-send mode=0700

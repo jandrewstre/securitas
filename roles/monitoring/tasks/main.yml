@@ -1,4 +1,9 @@
 ---
+
+##
+# LOGWATCH
+##
+
 - name: Ensure logwatch is installed
   apt: pkg=logwatch state=present
 
@@ -6,3 +11,39 @@
   template: src=logwatch.conf.j2 dest=/etc/logwatch/conf/logwatch.conf mode=0644
 
 # FIXME: Better logwatch html template.
+
+##
+# LOGSTASH
+##
+
+- name: Ensure java is installed and up to date
+  apt: pkg=openjdk-7-jre state=latest
+
+- name: Retrieve logstash repository signing key
+  apt_key: url=http://packages.elasticsearch.org/GPG-KEY-elasticsearch state=present
+
+- name: Add logstash repository
+  apt_repository: repo='deb http://packages.elasticsearch.org/logstash/1.4/debian stable main' state=present
+  register: logstash_repo
+
+- name: Update apt cache
+  apt: update_cache=yes
+  when: logstash_repo|changed
+
+- name: Ensure logstash is installed and up to date
+  apt: pkg=logstash state=latest
+
+- name: Prevent logstash-web from starting on boot
+  lineinfile: dest=/etc/init/logstash-web.override line="manual" create=yes
+
+# FIXME: Should probably just add to /etc/init/logstash.override instead of modifying the config file directly.
+- name: Make logstash run as root
+  replace: dest=/etc/init/logstash.conf regexp="^set(uid|gid) (.+)" replace="#set\1 \2"
+
+- name: Configure SSH login notifications via logstash
+  template: src=00ssh-login-notifications.conf.j2 dest=/etc/logstash/conf.d/00ssh-login-notifications.conf mode=0644
+  notify:
+    - restart logstash
+
+- name: Ensure logstash is started
+  service: name=logstash state=started

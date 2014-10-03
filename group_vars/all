@@ -10,6 +10,14 @@
 # REQUIRED
 # admin_user_authorized_keys: []
 
+# REQUIRED
+# mandrill_username: "foo@bar.com"
+# mandrill_api_key: "XXXXXXXXXXXXXXXXXXXXXX"
+
+# REQUIRED
+# ssh_login_notification_to: "foo@bar.com"
+# ssh_login_notification_cc: "5555555555@txt.att.net"
+
 # OPTIONAL
 # zerotier_network_id: "foo"
 

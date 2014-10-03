@@ -5,3 +5,5 @@ logwatch_mailto: "root"
 logwatch_mailfrom: "root"
 logwatch_range: "Yesterday" # or All or Today
 logwatch_detail: "Med"      # or Low, High, or a number in [0,10] (0 being Low, 5 being Med, and 10 being High)
+
+ssh_login_notification_from: "root@{{inventory_hostname}}"

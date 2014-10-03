@@ -11,6 +11,7 @@
     - users
     - dns
     - unattended-upgrades
+    - mandrill-send
     - monitoring
     # - zerotier
     - ufw

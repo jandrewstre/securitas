@@ -1,0 +1,2 @@
+#!/bin/bash
+/usr/bin/sendemail -s 'smtp.mandrillapp.com:587' -o tls=yes -xu "{{mandrill_username}}" -xp "{{mandrill_api_key}}" $*
