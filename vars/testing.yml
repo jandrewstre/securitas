@@ -1,9 +1,0 @@
----
-# password: root
-root_user_password: "$6$f88s7d7fjjsdfl$iNVNiGx9PpszGBCWY0Ob7VuhkZ4CgsLrBvEcueG3xf6DMbIZo.FAZbGxgZ1udoDUmvkFvyTjK0bY8X11/Tia4."
-
-# password: deploy
-admin_user_password: "$6$f88s7d7fjjsdfl$W2.au1oqTrGIv.cJOdaqcRoBoixfLCBK0mPw3DSHtcG43Hz9jB4LBlh9Zh0giHMchrPiMAWwxwRdlFEfxfV.90"
-
-admin_user_authorized_keys:
-  - "{{ lookup('file', '~/.ssh/id_rsa.pub') }}"

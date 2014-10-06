@@ -1,4 +1,0 @@
----
-- name: Load testing variables if applicable
-  include_vars: vars/testing.yml
-  when: testing is defined
