@@ -1,3 +1,9 @@
 ---
 - name: restart logstash
   service: name=logstash state=restarted
+
+- name: newaliases
+  command: newaliases
+
+- name: reload postfix configuration
+  service: name=postfix state=reloaded

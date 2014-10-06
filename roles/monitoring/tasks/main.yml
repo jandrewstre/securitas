@@ -76,3 +76,20 @@
 - name: Ensure Linode Longview agent is installed and up to date
   apt: pkg=linode-longview state=latest
   when: linode_longview_api_key is defined
+
+##
+# POSTFIX CONFIGURATION FOR NOTIFICATIONS
+##
+
+- name: Ensure postfix is installed and up to date
+  apt: pkg=postfix state=latest
+
+- name: Configure mail aliases
+  template: src=aliases.j2 dest=/etc/aliases mode=0644
+  notify:
+    - newaliases
+
+- name: Configure mailname for host
+  template: src=mailname.j2 dest=/etc/mailname mode=0644
+  notify:
+    - reload postfix configuration

@@ -15,8 +15,14 @@
 # mandrill_api_key: "XXXXXXXXXXXXXXXXXXXXXX"
 
 # REQUIRED
-# ssh_login_notification_to: "foo@bar.com"
+# notification_email: "foo@bar.com"
+
+# REQUIRED
+# ssh_login_notification_to: "{{notification_email}}"
 # ssh_login_notification_cc: "5555555555@txt.att.net"
+
+# OPTIONAL
+# linode_longview_api_key: "XXXXXXXX-XXXX-XXXX-XXXXXXXXXXXXXXXX"
 
 # OPTIONAL
 # zerotier_network_id: "foo"
