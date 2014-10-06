@@ -2,7 +2,7 @@
 - hosts: all
   remote_user: "{{admin_user_username}}"
   sudo: true
-  gather_facts: false
+  gather_facts: true
 
   roles:
     - testing

@@ -47,3 +47,32 @@
 
 - name: Ensure logstash is started
   service: name=logstash state=started
+
+##
+# LINODE LONGVIEW
+##
+
+- name: Install Linode Longview apt repository signing key
+  apt_key: url=https://apt-longview.linode.com/linode.gpg state=present
+  when: linode_longview_api_key is defined
+
+- name: Add Linode Longview apt repository
+  apt_repository: repo='deb http://apt-longview.linode.com/ {{ansible_distribution_release}} main' state=present
+  register: longview_repo
+  when: linode_longview_api_key is defined
+
+- name: Ensure /etc/linode exists
+  command: mkdir -p /etc/linode
+  when: linode_longview_api_key is defined
+
+- name: Install Linode Longview API key
+  lineinfile: dest=/etc/linode/longview.key line='{{linode_longview_api_key}}' create=yes
+  when: linode_longview_api_key is defined
+
+- name: Update apt cache
+  apt: update_cache=yes
+  when: linode_longview_api_key is defined and longview_repo|changed
+
+- name: Ensure Linode Longview agent is installed and up to date
+  apt: pkg=linode-longview state=latest
+  when: linode_longview_api_key is defined
