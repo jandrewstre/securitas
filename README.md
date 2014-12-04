@@ -25,8 +25,8 @@ install of Ubuntu.
   - if ZeroTier is used, SSH traffic will not be allowed over any public interfaces,
     but all incoming traffic will be allowed over the private ZeroTier interface
 - setting up deny-by-default firewall rules, with exceptions only for SSH and loopback interface traffic
+- SSH login notifications, powered by logstash
 
 Coming soon:
 
-- SSH login notifications
 - possibly more robust monitoring via nagios
